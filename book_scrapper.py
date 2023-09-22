@@ -11,7 +11,16 @@ def scarpe_books(url):
 	for book in books:
 		book_data = (get_title(book),get_price(book),get_rating(book))
 		all_books.append(book_data)
-		print(all_books)
+	save_books(all_books)
+
+def save_books(all_books):
+	connection = sqlite3.connect("books.db")
+	c = connection.cursor()
+	c.execute('''CREATE TABLE books 
+		(title Text, price REAL, rating INTEGER)''')
+	c.executemany("INSERT INTO books VALUES (?,?,?)", all_books)
+	connection.commit()
+	connection.close()
 
 def get_title(book):
 	return book.find("h3").find("a")["title"]
